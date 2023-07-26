@@ -27,6 +27,9 @@ export class AppComponent {
   public activeRace?: Race;
   public races: Race[] = [];
 
+  public quickFilter: string = '';
+  private quickFilterDebounce?: ReturnType<typeof setTimeout>;
+
   constructor(private championChipIreland: ChampionChipIreland) {
     this.providers = [championChipIreland];
     this.onProviderChange(this.providers[0].name);
@@ -45,18 +48,26 @@ export class AppComponent {
 
     this.gridData = this.activeRace!.results;
     this.gridColumnDefinitions = Object.keys(this.gridData[0]).map((key) => {
-      const hide = !this.gridData.some((x) => x[key]);
+      const hasData = this.gridData.some((x) => x[key]);
       const isNumeric = this.gridData.every(
         (x) => !Number.isNaN(Number(x[key]))
       );
 
       return {
         field: key,
-        hide: hide,
+        hide: !hasData,
         cellDataType: isNumeric ? 'number' : undefined,
         valueGetter: isNumeric ? this.numberParser(key) : undefined,
       };
     });
+  }
+
+  onQuickFilterChanged(quickFilter: string) {
+    this.quickFilterDebounce && clearTimeout(this.quickFilterDebounce);
+
+    this.quickFilterDebounce = setTimeout(() => {
+      this.quickFilter = quickFilter;
+    }, 100);
   }
 
   numberParser(key: string) {
