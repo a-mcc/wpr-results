@@ -1,6 +1,6 @@
 .grid {
   width: 80vw;
-  height: 80vw;
+  height: 90vh;
 }
 
 :host {
@@ -10,19 +10,6 @@
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 8px 0;
-}
-
-p {
-  margin: 0;
 }
 
 .spacer {
@@ -59,17 +46,20 @@ p {
   flex-flow: row wrap;
   align-items: center;
 
-
-  .quick-filter {
-    height: 32px;
-    min-width: 50vw;
-    flex: 1;
-  }
-
-  .reset {
+  .controls {
     display: flex;
-    height: 32px;
-    flex: 0 1 1;
+    flex-direction: row;
+    width: 80vw;
+
+    .quick-filter {
+      height: 27px;
+      min-width: 50vw;
+      flex: 1;
+
+      &:focus {
+        outline: none;
+      }
+    }
   }
 }
 
@@ -107,20 +97,6 @@ svg#clouds {
 
 /* Responsive Styles */
 @media screen and (max-width: 767px) {
-  .card-container > *:not(.circle-link) ,
-  .terminal {
-    width: 100%;
-  }
-
-  .card:not(.highlight-card) {
-    height: 16px;
-    margin: 8px 0;
-  }
-
-  .card.highlight-card span {
-    margin-left: 72px;
-  }
-
   svg#rocket-smoke {
     right: 120px;
     transform: rotate(-5deg);

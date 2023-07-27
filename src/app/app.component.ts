@@ -1,9 +1,10 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { ColDef, ColumnState, ValueGetterParams } from 'ag-grid-community';
 import { Race } from './common/race';
 import { ChampionChipIreland } from './providers/championchip-ireland/championchip-ireland.provider';
 import { IProvider } from './providers/provider';
 import { AgGridAngular } from 'ag-grid-angular';
+import { IconDefinition, faRotateLeft, faMagnifyingGlass, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +13,10 @@ import { AgGridAngular } from 'ag-grid-angular';
 })
 export class AppComponent {
   @ViewChild(AgGridAngular) grid!: AgGridAngular;
+
+  public reset: IconDefinition = faRotateLeft;
+  public filter: IconDefinition = faMagnifyingGlass;
+  public clearFilter: IconDefinition = faXmark;
 
   public defaultGridColumnDef: ColDef = {
     filter: true,
@@ -49,9 +54,7 @@ export class AppComponent {
     this.gridData = this.activeRace!.results;
     this.gridColumnDefinitions = Object.keys(this.gridData[0]).map((key) => {
       const hasData = this.gridData.some((x) => x[key]);
-      const isNumeric = this.gridData.every(
-        (x) => !Number.isNaN(Number(x[key]))
-      );
+      const isNumeric = this.gridData.every((x) => !Number.isNaN(Number(x[key])));
 
       return {
         field: key,
@@ -77,5 +80,13 @@ export class AppComponent {
   resetGrid() {
     this.grid.api.setFilterModel(null);
     this.grid.columnApi.resetColumnState();
+  }
+
+  openQuickFilter() {
+    //
+  }
+
+  clearQuickFilter() {
+    this.quickFilter = '';
   }
 }

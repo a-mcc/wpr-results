@@ -1,0 +1,19 @@
+.button {
+  border: solid 1px #243c96;
+  height: 32px;
+  width: 32px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:hover {
+    background-color: lightblue;
+  }
+}
+
+fa-icon {
+  font-size: 24px;
+  color: #243c96;
+}
