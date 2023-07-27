@@ -45,6 +45,12 @@
   max-width: 80vw;
   flex-flow: row wrap;
   align-items: center;
+  justify-content: center;
+
+  .loading {
+    font-size: 512px;
+    color: #243c96;
+  }
 
   .controls {
     display: flex;

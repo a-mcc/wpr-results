@@ -2,7 +2,7 @@
   <img
     width="40"
     alt="WPR Logo"
-    src="../assets/wpr-icon-blue.jpg"
+    src="./assets/wpr-icon-blue.jpg"
   />
   <span>WPR Race Results</span>
 
@@ -20,12 +20,18 @@
 </div>
 
 <div class="content" role="main">
-  <div class="controls">
+  <fa-icon *ngIf="!activeRace"
+           class="loading fa-shake"
+           [icon]="runner">
+  </fa-icon>
+
+  <div class="controls" *ngIf="activeRace">
     <fa-button class="filter" [icon]="filter" (click)="openQuickFilter()"></fa-button>
     <input class="quick-filter" [(ngModel)]="quickFilter" placeholder="Enter some text to filter on..." />
     <fa-button class="clear" [icon]="clearFilter" (click)="clearQuickFilter()"></fa-button>
     <fa-button class="reset" [icon]="reset" (click)="resetGrid()" title="Reset"></fa-button>
   </div>
+
   <ag-grid-angular
     *ngIf="activeRace"
     class="grid ag-theme-alpine"

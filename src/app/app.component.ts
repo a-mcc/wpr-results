@@ -4,7 +4,7 @@ import { Race } from './common/race';
 import { ChampionChipIreland } from './providers/championchip-ireland/championchip-ireland.provider';
 import { IProvider } from './providers/provider';
 import { AgGridAngular } from 'ag-grid-angular';
-import { IconDefinition, faRotateLeft, faMagnifyingGlass, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faPersonRunning, faRotateLeft, faMagnifyingGlass, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +14,7 @@ import { IconDefinition, faRotateLeft, faMagnifyingGlass, faXmark } from '@forta
 export class AppComponent {
   @ViewChild(AgGridAngular) grid!: AgGridAngular;
 
+  public runner: IconDefinition = faPersonRunning;
   public reset: IconDefinition = faRotateLeft;
   public filter: IconDefinition = faMagnifyingGlass;
   public clearFilter: IconDefinition = faXmark;
