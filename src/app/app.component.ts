@@ -17,10 +17,7 @@ export class AppComponent {
   public runner: IconDefinition = faPersonRunning;
   public reset: IconDefinition = faRotateLeft;
 
-  public defaultGridColumnDef: ColDef = {
-    sortable: true,
-    flex: 1,
-  };
+  public defaultGridColumnDef: ColDef = { sortable: true };
   public gridColumnDefinitions: ColDef[] = [];
   public gridData: any[] = [];
 
@@ -71,15 +68,14 @@ export class AppComponent {
     this.grid.columnApi.resetColumnState();
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   resizeGrid() {
     const gridApi: any = this.grid.api;
 
-    const panel = gridApi.gridBodyCtrl;
-    const columns = panel.columnModel;
+    const body = gridApi.gridBodyCtrl;
 
-    const availableWidth = panel.eBodyViewport.clientWidth;
-    const usedWidth = columns.displayedColumns.reduce((totalWidth: any, column: any) => totalWidth + column.actualWidth, 0);
+    const availableWidth = body.eBodyViewport.clientWidth;
+    const usedWidth = body.columnModel.displayedColumns.reduce((totalWidth: any, column: any) => totalWidth + column.actualWidth, 0);
 
     if (usedWidth < availableWidth) {
       this.grid.api.sizeColumnsToFit();
