@@ -2,7 +2,7 @@
   <img
     width="40"
     alt="WPR Logo"
-    src="./assets/wpr-icon-blue.jpg"
+    src="assets/wpr-icon-blue.jpg"
   />
   <span>WPR Race Results</span>
 
@@ -26,9 +26,7 @@
   </fa-icon>
 
   <div class="controls" *ngIf="activeRace">
-    <fa-button class="filter" [icon]="filter" (click)="openQuickFilter()"></fa-button>
-    <input class="quick-filter" [(ngModel)]="quickFilter" placeholder="Enter some text to filter on..." />
-    <fa-button class="clear" [icon]="clearFilter" (click)="clearQuickFilter()"></fa-button>
+    <quick-filter [(text)]="quickFilter"></quick-filter>
     <fa-button class="reset" [icon]="reset" (click)="resetGrid()" title="Reset"></fa-button>
   </div>
 
@@ -39,6 +37,7 @@
     [columnDefs]="gridColumnDefinitions"
     [suppressFieldDotNotation]="true"
     [rowData]="gridData"
+    (rowDataUpdated)="resizeGrid()"
     [quickFilterText]="quickFilter">
   </ag-grid-angular>
 

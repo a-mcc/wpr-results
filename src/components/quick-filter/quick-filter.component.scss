@@ -1,0 +1,28 @@
+quick-filter {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  border: solid 1px;
+  border-radius: 3px;
+
+  fa-button .button {
+    border: none !important;
+  }
+
+  fa-button.filter .button {
+    cursor: default !important;
+
+    &:hover {
+      background-color: unset !important;
+    }
+  }
+
+  .quick-filter {
+    flex: 1;
+    border: none;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}

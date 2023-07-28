@@ -1,5 +1,5 @@
 .grid {
-  width: 80vw;
+  width: 100%;
   height: 90vh;
 }
 
@@ -55,17 +55,7 @@
   .controls {
     display: flex;
     flex-direction: row;
-    width: 80vw;
-
-    .quick-filter {
-      height: 27px;
-      min-width: 50vw;
-      flex: 1;
-
-      &:focus {
-        outline: none;
-      }
-    }
+    width: 100%;
   }
 }
 
@@ -106,6 +96,15 @@ svg#clouds {
   svg#rocket-smoke {
     right: 120px;
     transform: rotate(-5deg);
+  }
+}
+
+@media screen and (max-width: 1023px) {
+  .content {
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: -10px;
+    padding-left: 0;
   }
 }
 
