@@ -4,7 +4,7 @@
     alt="WPR Logo"
     src="assets/wpr-icon-blue.jpg"
   />
-  <span>WPR Race Results</span>
+  <span class="toolbar-title">WPR Race Results</span>
 
   <select class="header-dropdown" (change)="onProviderChange($any($event.target).value)" *ngIf="providers.length > 1">
     <option *ngFor="let provider of providers">
@@ -27,7 +27,6 @@
 
   <div class="controls" *ngIf="activeRace">
     <quick-filter [(text)]="quickFilter"></quick-filter>
-    <fa-button class="reset" [icon]="reset" (click)="resetGrid()" title="Reset"></fa-button>
   </div>
 
   <ag-grid-angular
@@ -38,6 +37,7 @@
     [suppressFieldDotNotation]="true"
     [rowData]="gridData"
     (rowDataUpdated)="resizeGrid()"
+    (firstDataRendered)="resizeGrid()"
     [quickFilterText]="quickFilter">
   </ag-grid-angular>
 

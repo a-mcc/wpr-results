@@ -25,4 +25,8 @@ quick-filter {
       outline: none;
     }
   }
+
+  @media screen and (max-width: 1023px) {
+    border-radius: 0;
+  }
 }
