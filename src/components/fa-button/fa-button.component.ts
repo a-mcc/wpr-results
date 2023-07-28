@@ -9,4 +9,7 @@ import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 export class FaButtonComponent {
   @Input({ required: true })
   icon!: IconDefinition;
+
+  @Input()
+  clickable: boolean = true;
 }

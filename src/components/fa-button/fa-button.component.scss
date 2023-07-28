@@ -1,12 +1,21 @@
 .button {
-  border: solid 1px #243c96;
   height: 32px;
   width: 32px;
-  border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+
+  &.clickable {
+    cursor: pointer;
+
+    &:hover {
+      background-color: lightgray;
+
+      &:active {
+        background-color: gray;
+      }
+    }
+  }
 }
 
 fa-icon {

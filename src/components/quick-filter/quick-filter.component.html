@@ -1,3 +1,3 @@
-<fa-button class="filter" [icon]="filter"></fa-button>
+<fa-button class="filter" [icon]="filter" [clickable]="false"></fa-button>
 <input class="quick-filter" [(ngModel)]="text" (ngModelChange)="onQuickFilterChanged(text)" placeholder="Filter here..." />
 <fa-button class="clear" [icon]="clearFilter" (click)="clearQuickFilter()"></fa-button>
