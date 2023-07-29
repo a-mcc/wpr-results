@@ -1,125 +1,124 @@
-@media (prefers-color-scheme: dark) or (prefers-color-scheme: light) {
-  .grid {
-    width: 100%;
-    height: 90vh;
+.grid {
+  width: 100%;
+  height: 90vh;
+}
+
+:host {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 14px;
+  color: #333;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.toolbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  background-color: #243c97;
+  color: white;
+  font-weight: 600;
+
+  &
+
+  img {
+    margin: 0 16px;
   }
 
-  :host {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    font-size: 14px;
-    color: #333;
-    box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  .spacer {
-    flex: 1;
-  }
-
-  .toolbar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    background-color: #293e95;
-    color: white;
-    font-weight: 600;
-
-    &
-
-    img {
-      margin: 0 16px;
-    }
-
-    .header-dropdown {
-      margin-left: 16px;
-      height: 32px;
-    }
-  }
-
-  .content {
-    display: flex;
-    margin: 82px auto 32px;
-    padding: 0 16px;
-    max-width: 80vw;
-    flex-flow: row wrap;
-    align-items: center;
-    justify-content: center;
-
-    .loading {
-      font-size: 512px;
-      color: #293e95;
-    }
-
-    .controls {
-      display: flex;
-      flex-direction: row;
-      width: 100%;
-    }
-  }
-
-  svg.material-icons {
-    height: 24px;
-    width: auto;
-  }
-
-  svg.material-icons:not(:last-child) {
-    margin-right: 8px;
-  }
-
-  svg#rocket {
-    width: 80px;
-    position: absolute;
-    left: -10px;
-    top: -24px;
-  }
-
-  svg#rocket-smoke {
-    height: calc(100vh - 95px);
-    position: absolute;
-    top: 10px;
-    right: 180px;
-    z-index: -10;
-  }
-
-  svg#clouds {
-    position: fixed;
-    bottom: -160px;
-    left: -230px;
-    z-index: -10;
-    width: 1920px;
-  }
-
-  /* Responsive Styles */
-  @media screen and (max-width: 767px) {
-    svg#rocket-smoke {
-      right: 120px;
-      transform: rotate(-5deg);
-    }
-  }
-
-  @media screen and (max-width: 1023px) {
-    .content {
-      width: 100vw;
-      max-width: 100vw;
-      margin-left: -8px;
-      margin-top: 60px;
-      padding-left: 0;
-    }
-
-    .toolbar-title {
-      display: none;
-    }
-  }
-
-  @media screen and (max-width: 575px) {
-    svg#rocket-smoke {
-      display: none;
-      visibility: hidden;
-    }
+  .header-dropdown {
+    margin-left: 16px;
+    height: 32px;
   }
 }
+
+.content {
+  display: flex;
+  margin: 82px auto 32px;
+  padding: 0 16px;
+  max-width: 80vw;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+
+  .loading {
+    font-size: 512px;
+    color: #243c97;
+  }
+
+  .controls {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+}
+
+svg.material-icons {
+  height: 24px;
+  width: auto;
+}
+
+svg.material-icons:not(:last-child) {
+  margin-right: 8px;
+}
+
+svg#rocket {
+  width: 80px;
+  position: absolute;
+  left: -10px;
+  top: -24px;
+}
+
+svg#rocket-smoke {
+  height: calc(100vh - 95px);
+  position: absolute;
+  top: 10px;
+  right: 180px;
+  z-index: -10;
+}
+
+svg#clouds {
+  position: fixed;
+  bottom: -160px;
+  left: -230px;
+  z-index: -10;
+  width: 1920px;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 767px) {
+  svg#rocket-smoke {
+    right: 120px;
+    transform: rotate(-5deg);
+  }
+}
+
+@media screen and (max-width: 1023px) {
+  .content {
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: -8px;
+    margin-top: 60px;
+    padding-left: 0;
+  }
+
+  .toolbar-title {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 575px) {
+  svg#rocket-smoke {
+    display: none;
+    visibility: hidden;
+  }
+}
+

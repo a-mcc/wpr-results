@@ -1,4 +1,4 @@
-import { Component, ViewChild, HostListener } from '@angular/core';
+import { Component, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ColDef, ValueGetterParams } from 'ag-grid-community';
 import { Race } from './common/race';
 import { ChampionChipIreland } from './providers/championchip-ireland/championchip-ireland.provider';
@@ -19,6 +19,7 @@ export class AppComponent {
 
   public defaultGridColumnDef: ColDef = { sortable: true };
   public gridColumnDefinitions: ColDef[] = [];
+  public gridColumnDefinitionsMobile: ColDef[] = [];
   public gridData: any[] = [];
 
   public activeProvider?: IProvider;
@@ -28,6 +29,8 @@ export class AppComponent {
   public races: Race[] = [];
 
   public quickFilter: string = '';
+
+  public isMobile: boolean = false;
 
   constructor(private championChipIreland: ChampionChipIreland) {
     this.providers = [championChipIreland];
@@ -43,12 +46,12 @@ export class AppComponent {
   }
 
   onRaceChange(name: string) {
-    this.activeRace = this.races.find((x) => x.name === name);
+    this.activeRace = this.races.find((x) => x.name === name)!;
 
-    this.gridData = this.activeRace!.results;
-    this.gridColumnDefinitions = Object.keys(this.gridData[0]).map((key) => {
+    this.gridData = this.activeRace.results;
+    this.gridColumnDefinitions = this.activeRace.headers.map((key) => {
       const hasData = this.gridData.some((x) => x[key]);
-      const isNumeric = this.gridData.every((x) => !Number.isNaN(Number(x[key])));
+      const isNumeric = hasData && this.gridData.every((x) => !Number.isNaN(Number(x[key])));
 
       return {
         field: key,
@@ -57,6 +60,8 @@ export class AppComponent {
         valueGetter: isNumeric ? this.numberParser(key) : undefined,
       };
     });
+
+    this.gridColumnDefinitionsMobile = this.gridColumnDefinitions.filter((x) => this.activeRace?.headersMobile.includes(x.field!));
   }
 
   numberParser(key: string) {
@@ -68,19 +73,22 @@ export class AppComponent {
     this.grid.columnApi.resetColumnState();
   }
 
-  @HostListener('window:resize')
   resizeGrid() {
+    this.grid.columnApi.autoSizeAllColumns();
+
     const gridApi: any = this.grid.api;
+    const availableWidth = gridApi.gridBodyCtrl.eBodyViewport.clientWidth;
+    const usedWidth = gridApi.gridBodyCtrl.columnModel.displayedColumns.reduce((totalWidth: any, column: any) => totalWidth + column.actualWidth, 0);
 
-    const body = gridApi.gridBodyCtrl;
-
-    const availableWidth = body.eBodyViewport.clientWidth;
-    const usedWidth = body.columnModel.displayedColumns.reduce((totalWidth: any, column: any) => totalWidth + column.actualWidth, 0);
-
-    if (usedWidth < availableWidth) {
+    if (availableWidth > usedWidth) {
       this.grid.api.sizeColumnsToFit();
-    } else {
-      this.grid.columnApi.autoSizeAllColumns();
     }
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.isMobile = window.innerWidth < 1024;
+
+    setTimeout(() => this.resizeGrid());
   }
 }

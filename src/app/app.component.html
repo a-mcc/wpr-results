@@ -33,11 +33,10 @@
     *ngIf="activeRace"
     class="grid ag-theme-alpine"
     [defaultColDef]="defaultGridColumnDef"
-    [columnDefs]="gridColumnDefinitions"
+    [columnDefs]="isMobile ? gridColumnDefinitionsMobile : gridColumnDefinitions"
     [suppressFieldDotNotation]="true"
     [rowData]="gridData"
     (rowDataUpdated)="resizeGrid()"
-    (firstDataRendered)="resizeGrid()"
     [quickFilterText]="quickFilter">
   </ag-grid-angular>
 
