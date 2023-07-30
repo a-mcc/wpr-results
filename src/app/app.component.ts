@@ -1,10 +1,10 @@
-import { Component, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, ViewChild, HostListener } from '@angular/core';
 import { ColDef, ValueGetterParams } from 'ag-grid-community';
 import { Race } from './common/race';
 import { ChampionChipIreland } from './providers/championchip-ireland/championchip-ireland.provider';
 import { IProvider } from './providers/provider';
 import { AgGridAngular } from 'ag-grid-angular';
-import { IconDefinition, faPersonRunning, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faPersonRunning } from '@fortawesome/free-solid-svg-icons';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 @Component({
@@ -16,18 +16,17 @@ export class AppComponent {
   @ViewChild(AgGridAngular) grid!: AgGridAngular;
 
   public runner: IconDefinition = faPersonRunning;
-  public reset: IconDefinition = faRotateLeft;
 
   public defaultGridColumnDef: ColDef = { sortable: true };
   public gridColumnDefinitions: ColDef[] = [];
   public gridColumnDefinitionsMobile: ColDef[] = [];
   public gridData: any[] = [];
 
-  public activeProvider?: IProvider;
   public providers: IProvider[];
+  private activeProvider!: IProvider;
 
-  public activeRace?: Race;
   public races: Race[] = [];
+  private activeRace!: Race;
 
   public quickFilter: string = '';
 
@@ -40,11 +39,9 @@ export class AppComponent {
     this.onProviderChange(this.providers[0].name);
   }
 
-  title = 'WPR Results';
-
   async onProviderChange(name: string): Promise<void> {
-    this.activeProvider = this.providers.find((x) => x.name === name);
-    this.races = await this.activeProvider!.getRaces();
+    this.activeProvider = this.providers.find((x) => x.name === name)!;
+    this.races = await this.activeProvider.getRaces();
     this.onRaceChange(this.races[0].name);
   }
 
@@ -64,17 +61,12 @@ export class AppComponent {
       };
     });
 
-    this.gridColumnDefinitionsMobile = this.gridColumnDefinitions.filter((x) => this.activeRace?.headersMobile.includes(x.field!));
+    this.gridColumnDefinitionsMobile = this.gridColumnDefinitions.filter((x) => this.activeRace.headersMobile.includes(x.field!));
     this.hasMobileColumns = this.gridColumnDefinitionsMobile.length != this.gridColumnDefinitions.length;
   }
 
   numberParser(key: string) {
     return (params: ValueGetterParams) => Number(params.data[key]);
-  }
-
-  resetGrid() {
-    this.grid.api.setFilterModel(null);
-    this.grid.columnApi.resetColumnState();
   }
 
   resizeGrid() {
