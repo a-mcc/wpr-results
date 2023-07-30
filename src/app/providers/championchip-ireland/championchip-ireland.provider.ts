@@ -38,7 +38,7 @@ export class ChampionChipIreland implements IProvider {
     const hasMultipleRaces = chipEvent.races.length > 1;
 
     return chipEvent.races.map((race) => ({
-      name: hasMultipleRaces ? `${chipEvent.name} - ${race.name}` : chipEvent.name,
+      name: (hasMultipleRaces ? `${chipEvent.name} - ${race.name}` : chipEvent.name).trim(),
       results: this.mapRace(race),
       headers: race.columns.split(',').map((x) => race.csv_headers[Number(x)]),
       headersMobile: race.columns_mobile.split(',').map((x) => race.csv_headers[Number(x)]),

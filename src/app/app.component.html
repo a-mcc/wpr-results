@@ -17,6 +17,17 @@
       {{race.name}}
     </option>
   </select>
+
+  <div class="spacer"></div>
+
+  <div class="show-all-columns" *ngIf="isMobile">
+    Show all columns:
+    <mat-slide-toggle color="primary"
+                      [checked]="showAllColumns || !hasMobileColumns"
+                      [disabled]="!hasMobileColumns"
+                      (change)="onShowAllColumnsChange($event)">
+      </mat-slide-toggle>
+  </div>
 </div>
 
 <div class="content" role="main">
@@ -33,10 +44,11 @@
     *ngIf="activeRace"
     class="grid ag-theme-alpine"
     [defaultColDef]="defaultGridColumnDef"
-    [columnDefs]="isMobile ? gridColumnDefinitionsMobile : gridColumnDefinitions"
+    [columnDefs]="(isMobile && !showAllColumns) ? gridColumnDefinitionsMobile : gridColumnDefinitions"
     [suppressFieldDotNotation]="true"
     [rowData]="gridData"
     (rowDataUpdated)="resizeGrid()"
+    (firstDataRendered)="onWindowResize()"
     [quickFilterText]="quickFilter">
   </ag-grid-angular>
 

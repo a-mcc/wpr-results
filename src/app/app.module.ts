@@ -4,14 +4,16 @@ import { HttpClientModule } from '@angular/common/http';
 import { AgGridModule } from 'ag-grid-angular';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { FaButtonComponent } from '../components/fa-button/fa-button.component';
 import { QuickFilterComponent } from 'src/components/quick-filter/quick-filter.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [AppComponent, FaButtonComponent, QuickFilterComponent],
-  imports: [BrowserModule, HttpClientModule, AgGridModule, FontAwesomeModule, FormsModule],
+  imports: [BrowserModule, HttpClientModule, AgGridModule, FontAwesomeModule, FormsModule, BrowserAnimationsModule, MatSlideToggleModule],
   providers: [],
   bootstrap: [AppComponent],
 })

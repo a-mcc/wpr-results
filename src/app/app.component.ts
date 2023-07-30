@@ -5,6 +5,7 @@ import { ChampionChipIreland } from './providers/championchip-ireland/championch
 import { IProvider } from './providers/provider';
 import { AgGridAngular } from 'ag-grid-angular';
 import { IconDefinition, faPersonRunning, faRotateLeft } from '@fortawesome/free-solid-svg-icons';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-root',
@@ -31,6 +32,8 @@ export class AppComponent {
   public quickFilter: string = '';
 
   public isMobile: boolean = false;
+  public hasMobileColumns: boolean = false;
+  public showAllColumns: boolean = false;
 
   constructor(private championChipIreland: ChampionChipIreland) {
     this.providers = [championChipIreland];
@@ -62,6 +65,7 @@ export class AppComponent {
     });
 
     this.gridColumnDefinitionsMobile = this.gridColumnDefinitions.filter((x) => this.activeRace?.headersMobile.includes(x.field!));
+    this.hasMobileColumns = this.gridColumnDefinitionsMobile.length != this.gridColumnDefinitions.length;
   }
 
   numberParser(key: string) {
@@ -83,6 +87,12 @@ export class AppComponent {
     if (availableWidth > usedWidth) {
       this.grid.api.sizeColumnsToFit();
     }
+  }
+
+  onShowAllColumnsChange(event: MatSlideToggleChange) {
+    this.showAllColumns = event.checked;
+
+    setTimeout(() => this.resizeGrid());
   }
 
   @HostListener('window:resize')
