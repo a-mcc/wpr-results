@@ -12,7 +12,7 @@
     </option>
   </select>
 
-  <select class="header-dropdown" (change)="onRaceChange($any($event.target).value)" *ngIf="activeProvider && races.length">
+  <select class="header-dropdown" (change)="onRaceChange($any($event.target).value)" *ngIf="races.length">
     <option *ngFor="let race of races">
       {{race.name}}
     </option>
@@ -31,17 +31,17 @@
 </div>
 
 <div class="content" role="main">
-  <fa-icon *ngIf="!activeRace"
+  <fa-icon *ngIf="!races.length"
            class="loading fa-shake"
            [icon]="runner">
   </fa-icon>
 
-  <div class="controls" *ngIf="activeRace">
+  <div class="controls" *ngIf="races.length">
     <quick-filter [(text)]="quickFilter"></quick-filter>
   </div>
 
   <ag-grid-angular
-    *ngIf="activeRace"
+    *ngIf="races.length"
     class="grid ag-theme-alpine"
     [defaultColDef]="defaultGridColumnDef"
     [columnDefs]="(isMobile && !showAllColumns) ? gridColumnDefinitionsMobile : gridColumnDefinitions"
