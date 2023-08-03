@@ -60,6 +60,18 @@
     display: flex;
     flex-direction: row;
     width: 100%;
+    border: solid 1px #babfc7;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom: 0;
+
+    @media screen and (max-width: 1023px) {
+      border-radius: 0;
+    }
+
+    .export {
+      border-left: solid 1px #babfc7;
+    }
   }
 }
 

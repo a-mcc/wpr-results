@@ -2,10 +2,6 @@ quick-filter {
   display: flex;
   flex-direction: row;
   flex: 1;
-  border: solid 1px #babfc7;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-  border-bottom: 0;
 
   .quick-filter {
     flex: 1;
@@ -14,9 +10,5 @@ quick-filter {
     &:focus {
       outline: none;
     }
-  }
-
-  @media screen and (max-width: 1023px) {
-    border-radius: 0;
   }
 }

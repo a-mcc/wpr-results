@@ -26,7 +26,7 @@
                       [checked]="showAllColumns || !hasMobileColumns"
                       [disabled]="!hasMobileColumns"
                       (change)="onShowAllColumnsChange($event)">
-      </mat-slide-toggle>
+    </mat-slide-toggle>
   </div>
 </div>
 
@@ -38,6 +38,7 @@
 
   <div class="controls" *ngIf="races.length">
     <quick-filter [(text)]="quickFilter"></quick-filter>
+    <fa-button class="export" [icon]="download" (click)="exportData()"></fa-button>
   </div>
 
   <ag-grid-angular

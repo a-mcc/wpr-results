@@ -4,7 +4,7 @@ import { Race } from './common/race';
 import { ChampionChipIreland } from './providers/championchip-ireland/championchip-ireland.provider';
 import { IProvider } from './providers/provider';
 import { AgGridAngular } from 'ag-grid-angular';
-import { IconDefinition, faPersonRunning } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faPersonRunning, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
 @Component({
@@ -16,6 +16,7 @@ export class AppComponent {
   @ViewChild(AgGridAngular) grid!: AgGridAngular;
 
   public runner: IconDefinition = faPersonRunning;
+  public download: IconDefinition = faDownload;
 
   public defaultGridColumnDef: ColDef = { sortable: true };
   public gridColumnDefinitions: ColDef[] = [];
@@ -61,8 +62,12 @@ export class AppComponent {
       };
     });
 
-    this.gridColumnDefinitionsMobile = this.gridColumnDefinitions.filter((x) => this.activeRace.headersMobile.includes(x.field!));
-    this.hasMobileColumns = this.gridColumnDefinitionsMobile.length != this.gridColumnDefinitions.length;
+    this.gridColumnDefinitionsMobile = this.gridColumnDefinitions.map((columnDefinition) => ({
+      ...columnDefinition,
+      hide: columnDefinition.hide || !this.activeRace.headersMobile.includes(columnDefinition.field!),
+    }));
+
+    this.hasMobileColumns = this.activeRace.headersMobile.length != this.activeRace.headers.length;
   }
 
   numberParser(key: string) {
@@ -79,6 +84,14 @@ export class AppComponent {
     if (availableWidth > usedWidth) {
       this.grid.api.sizeColumnsToFit();
     }
+  }
+
+  exportData() {
+    this.grid.api.exportDataAsCsv({
+      exportedRows: 'filteredAndSorted',
+      fileName: `${this.activeRace.name}.csv`,
+      allColumns: true,
+    });
   }
 
   onShowAllColumnsChange(event: MatSlideToggleChange) {
