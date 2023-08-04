@@ -1,6 +1,6 @@
-import { Race } from '../common/race';
+import { RaceMap } from '../common/race';
 
 export interface IProvider {
   name: string;
-  getRaces: () => Promise<Race[]>;
+  getRaces: () => Promise<RaceMap>;
 }

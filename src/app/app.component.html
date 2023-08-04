@@ -12,9 +12,9 @@
     </option>
   </select>
 
-  <select class="header-dropdown" (change)="onRaceChange($any($event.target).value)" *ngIf="races.length">
-    <option *ngFor="let race of races">
-      {{race.name}}
+  <select class="header-dropdown" (change)="onRaceChange($any($event.target).value)" *ngIf="raceNames.length">
+    <option *ngFor="let race of raceNames">
+      {{race}}
     </option>
   </select>
 
@@ -31,18 +31,18 @@
 </div>
 
 <div class="content" role="main">
-  <fa-icon *ngIf="!races.length"
+  <fa-icon *ngIf="!raceNames.length"
            class="loading fa-shake"
            [icon]="runner">
   </fa-icon>
 
-  <div class="controls" *ngIf="races.length">
+  <div class="controls" *ngIf="raceNames.length">
     <quick-filter [(text)]="quickFilter"></quick-filter>
     <fa-button class="export" [icon]="download" (click)="exportData()"></fa-button>
   </div>
 
   <ag-grid-angular
-    *ngIf="races.length"
+    *ngIf="raceNames.length"
     class="grid ag-theme-alpine"
     [defaultColDef]="defaultGridColumnDef"
     [columnDefs]="(isMobile && !showAllColumns) ? gridColumnDefinitionsMobile : gridColumnDefinitions"

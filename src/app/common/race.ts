@@ -4,3 +4,5 @@ export type Race = {
   headers: string[];
   headersMobile: string[];
 };
+
+export class RaceMap extends Map<string, () => Promise<Race>> {}

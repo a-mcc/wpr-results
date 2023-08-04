@@ -1,11 +1,12 @@
 import { Component, ViewChild, HostListener } from '@angular/core';
 import { ColDef, ValueGetterParams } from 'ag-grid-community';
-import { Race } from './common/race';
+import { Race, RaceMap } from './common/race';
 import { ChampionChipIreland } from './providers/championchip-ireland/championchip-ireland.provider';
 import { IProvider } from './providers/provider';
 import { AgGridAngular } from 'ag-grid-angular';
 import { IconDefinition, faPersonRunning, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { ParkrunProvider } from './providers/parkrun/parkrun.provider';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +27,8 @@ export class AppComponent {
   public providers: IProvider[];
   private activeProvider!: IProvider;
 
-  public races: Race[] = [];
+  public raceNames: string[] = [];
+  private races: RaceMap = new RaceMap();
   private activeRace!: Race;
 
   public quickFilter: string = '';
@@ -35,19 +37,20 @@ export class AppComponent {
   public hasMobileColumns: boolean = false;
   public showAllColumns: boolean = false;
 
-  constructor(private championChipIreland: ChampionChipIreland) {
-    this.providers = [championChipIreland];
+  constructor(private championChipIreland: ChampionChipIreland, private parkrunProvider: ParkrunProvider) {
+    this.providers = [parkrunProvider, championChipIreland];
     this.onProviderChange(this.providers[0].name);
   }
 
   async onProviderChange(name: string): Promise<void> {
     this.activeProvider = this.providers.find((x) => x.name === name)!;
     this.races = await this.activeProvider.getRaces();
-    this.onRaceChange(this.races[0].name);
+    this.raceNames = [...this.races.keys()];
+    await this.onRaceChange(this.raceNames[0]);
   }
 
-  onRaceChange(name: string) {
-    this.activeRace = this.races.find((x) => x.name === name)!;
+  async onRaceChange(name: string) {
+    this.activeRace = await this.races.get(name)!();
 
     this.gridData = this.activeRace.results;
     this.gridColumnDefinitions = this.activeRace.headers.map((key) => {

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Race } from 'src/app/common/race';
+import { Race, RaceMap } from 'src/app/common/race';
 import { IProvider } from '../provider';
 import { firstValueFrom } from 'rxjs';
 
@@ -24,10 +24,12 @@ export class ChampionChipIreland implements IProvider {
 
   public name = 'ChampionChip Ireland';
 
-  public async getRaces(): Promise<Race[]> {
+  public async getRaces(): Promise<RaceMap> {
     const chipEvents = await this.getChipEvents();
 
-    return chipEvents.flatMap(this.mapRaces);
+    return chipEvents.flatMap(this.mapRaces).reduce((map, race) => {
+      return map.set(race.name, async () => race);
+    }, new RaceMap());
   }
 
   private async getChipEvents(): Promise<ChipEvent[]> {

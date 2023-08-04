@@ -29,6 +29,7 @@
     "ag-grid-angular": "^30.0.5",
     "ag-grid-community": "^30.0.5",
     "capital-case": "^1.0.4",
+    "cheerio": "^1.0.0-rc.12",
     "rxjs": "~7.8.1",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.1"
