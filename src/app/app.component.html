@@ -31,18 +31,18 @@
 </div>
 
 <div class="content" role="main">
-  <fa-icon *ngIf="!raceNames.length"
+  <fa-icon *ngIf="isLoading"
            class="loading fa-shake"
            [icon]="runner">
   </fa-icon>
 
-  <div class="controls" *ngIf="raceNames.length">
+  <div class="controls" *ngIf="!isLoading">
     <quick-filter [(text)]="quickFilter"></quick-filter>
     <fa-button class="export" [icon]="download" (click)="exportData()"></fa-button>
   </div>
 
   <ag-grid-angular
-    *ngIf="raceNames.length"
+    *ngIf="!isLoading"
     class="grid ag-theme-alpine"
     [defaultColDef]="defaultGridColumnDef"
     [columnDefs]="(isMobile && !showAllColumns) ? gridColumnDefinitionsMobile : gridColumnDefinitions"

@@ -16,6 +16,8 @@ import { ParkrunProvider } from './providers/parkrun/parkrun.provider';
 export class AppComponent {
   @ViewChild(AgGridAngular) grid!: AgGridAngular;
 
+  public isLoading: boolean = true;
+
   public runner: IconDefinition = faPersonRunning;
   public download: IconDefinition = faDownload;
 
@@ -43,6 +45,8 @@ export class AppComponent {
   }
 
   async onProviderChange(name: string): Promise<void> {
+    this.quickFilter = '';
+    this.isLoading = true;
     this.activeProvider = this.providers.find((x) => x.name === name)!;
     this.races = await this.activeProvider.getRaces();
     this.raceNames = [...this.races.keys()];
@@ -50,6 +54,8 @@ export class AppComponent {
   }
 
   async onRaceChange(name: string) {
+    this.isLoading = true;
+
     this.activeRace = await this.races.get(name)!();
 
     this.gridData = this.activeRace.results;
@@ -71,6 +77,8 @@ export class AppComponent {
     }));
 
     this.hasMobileColumns = this.activeRace.headersMobile.length != this.activeRace.headers.length;
+
+    this.isLoading = false;
   }
 
   numberParser(key: string) {
