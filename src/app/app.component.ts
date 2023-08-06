@@ -47,6 +47,7 @@ export class AppComponent {
   async onProviderChange(name: string): Promise<void> {
     this.quickFilter = '';
     this.isLoading = true;
+    this.raceNames = [];
     this.activeProvider = this.providers.find((x) => x.name === name)!;
     this.races = await this.activeProvider.getRaces();
     this.raceNames = [...this.races.keys()];
