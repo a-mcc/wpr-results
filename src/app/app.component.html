@@ -6,25 +6,26 @@
   />
   <span class="toolbar-title">WPR Race Results</span>
 
-  <select class="header-dropdown" (change)="onProviderChange($any($event.target).value)" *ngIf="providers.length > 1">
-    <option *ngFor="let provider of providers">
-      {{provider.name}}
-    </option>
-  </select>
+  <div class="dropdowns">
+    <select class="dropdown" (change)="onProviderChange($any($event.target).value)" *ngIf="providers.length > 1">
+      <option *ngFor="let provider of providers">
+        {{provider.name}}
+      </option>
+    </select>
 
-  <select class="header-dropdown" (change)="onRaceChange($any($event.target).value)" *ngIf="raceNames.length">
-    <option *ngFor="let race of raceNames">
-      {{race}}
-    </option>
-  </select>
+    <select class="dropdown" (change)="onRaceChange($any($event.target).value)" *ngIf="raceNames.length">
+      <option *ngFor="let race of raceNames">
+        {{race}}
+      </option>
+    </select>
+  </div>
 
   <div class="spacer"></div>
 
-  <div class="show-all-columns" *ngIf="isMobile">
+  <div class="show-all-columns" *ngIf="isMobile && hasMobileColumns">
     Show all columns:
     <mat-slide-toggle color="primary"
-                      [checked]="showAllColumns || !hasMobileColumns"
-                      [disabled]="!hasMobileColumns"
+                      [checked]="showAllColumns"
                       (change)="onShowAllColumnsChange($event)">
     </mat-slide-toggle>
   </div>

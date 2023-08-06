@@ -63,7 +63,7 @@ export class ParkrunProvider implements IProvider {
       name: date,
       results: [...results].flat().sort((x, y) => x.parkrun.localeCompare(y.parkrun)),
       headers: ['parkrun', 'Position', 'Gender Position', 'Name', 'Time', 'Achievement'],
-      headersMobile: ['parkrun', 'Position', 'Gender Position', 'Name', 'Time', 'Achievement'],
+      headersMobile: ['parkrun', 'Position', 'Name', 'Time', 'Achievement'],
     });
   }
 
@@ -80,7 +80,7 @@ export class ParkrunProvider implements IProvider {
       const achievement = $tr.attr('data-achievement')!;
 
       return {
-        parkrun: parkrunName,
+        parkrun: parkrunName.split('parkrun')[0].trim(),
         Position: position,
         'Gender Position': genderPosition,
         Name: name,
