@@ -24,12 +24,18 @@ export class ChampionChipIreland implements IProvider {
 
   public name = 'ChampionChip Ireland';
 
+  private races!: RaceMap;
+
   public async getRaces(): Promise<RaceMap> {
+    if (this.races) {
+      return this.races;
+    }
+
     const chipEvents = await this.getChipEvents();
 
-    return chipEvents.flatMap(this.mapRaces).reduce((map, race) => {
+    return (this.races = chipEvents.flatMap(this.mapRaces).reduce((map, race) => {
       return map.set(race.name, async () => race);
-    }, new RaceMap());
+    }, new RaceMap()));
   }
 
   private async getChipEvents(): Promise<ChipEvent[]> {
