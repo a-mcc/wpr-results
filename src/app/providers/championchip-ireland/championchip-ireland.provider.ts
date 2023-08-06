@@ -42,7 +42,7 @@ export class ChampionChipIreland implements IProvider {
     return await firstValueFrom(this.http.get<ChipEvent[]>(`https://api.championchipireland.com/v1/chip_events?${Date.now()}`));
   }
 
-  mapRaces = (chipEvent: ChipEvent): Race[] => {
+  private mapRaces = (chipEvent: ChipEvent): Race[] => {
     const hasMultipleRaces = chipEvent.races.length > 1;
 
     return chipEvent.races.map((race) => ({
@@ -53,7 +53,7 @@ export class ChampionChipIreland implements IProvider {
     }));
   };
 
-  mapRace = (race: ChampionChipRace): any[] => {
+  private mapRace = (race: ChampionChipRace): any[] => {
     return race.csv_data.map((data) =>
       race.csv_headers.reduce((result: any, header, index) => {
         result[header] = data[index];

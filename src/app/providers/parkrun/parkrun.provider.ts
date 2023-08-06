@@ -28,22 +28,29 @@ export class ParkrunProvider implements IProvider {
     const now = new Date();
     const daysSinceSaturday = (1 + now.getDay()) % 7;
     const saturday = new Date(now.setDate(now.getDate() - daysSinceSaturday));
-    saturday.setHours(12);
 
     const races = new RaceMap();
 
     while (races.size < 4) {
-      const date = saturday.toISOString().split('T')[0];
+      const date = formatDate(saturday);
       races.set(date, () => this.getClubReport(date));
       saturday.setDate(saturday.getDate() - 7);
     }
 
     return races;
+
+    function formatDate(date: Date): string {
+      const year = date.getFullYear().toString();
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const day = date.getDate().toString().padStart(2, '0');
+
+      return `${year}-${month}-${day}`;
+    }
   }
 
   private async getClubReport(date: string): Promise<Race> {
     return this.cache.get(this.name, date, async () => {
-      const html = await firstValueFrom(this.http.get(this.cors + this.consolidatedReportUrl + date, { responseType: 'text' }));
+      const html = await this.getHTML(this.consolidatedReportUrl + date);
       const $ = cheerio.load(html);
 
       const eventResults = $('h2').map((i, h2) => {
@@ -65,7 +72,9 @@ export class ParkrunProvider implements IProvider {
   }
 
   private async getEventResults(parkrunName: string, event: string): Promise<ParkrunRace[]> {
-    const html = await firstValueFrom(this.http.get(this.cors + event, { responseType: 'text' }));
+    parkrunName = parkrunName.split('parkrun')[0].trim();
+
+    const html = await this.getHTML(event);
     const $ = cheerio.load(html);
 
     const results = $('tr[data-club="Ward Park Runners"]').map((i, tr) => {
@@ -77,7 +86,7 @@ export class ParkrunProvider implements IProvider {
       const achievement = $tr.attr('data-achievement')!;
 
       return {
-        parkrun: parkrunName.split('parkrun')[0].trim(),
+        parkrun: parkrunName,
         Position: position,
         'Gender Position': genderPosition,
         Name: name,
@@ -87,5 +96,9 @@ export class ParkrunProvider implements IProvider {
     });
 
     return [...results];
+  }
+
+  private async getHTML(url: string): Promise<string> {
+    return await firstValueFrom(this.http.get(this.cors + url, { responseType: 'text' }));
   }
 }
