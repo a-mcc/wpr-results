@@ -3,6 +3,11 @@ import { Injectable } from '@angular/core';
 import { Race, RaceMap } from 'src/app/common/race';
 import { IProvider } from '../provider';
 import { firstValueFrom } from 'rxjs';
+import { ProviderCache } from '../provider.cache';
+
+interface UpdatableRace extends Race {
+  updatedAt: string;
+}
 
 type ChampionChipRace = {
   name: string;
@@ -20,7 +25,7 @@ type ChipEvent = {
 
 @Injectable({ providedIn: 'root' })
 export class ChampionChipIreland implements IProvider {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private cache: ProviderCache) {}
 
   public name = 'ChampionChip Ireland';
 
@@ -33,16 +38,24 @@ export class ChampionChipIreland implements IProvider {
 
     const chipEvents = await this.getChipEvents();
 
-    return (this.races = chipEvents.flatMap(this.mapRaces).reduce((map, race) => {
+    const cachedRaces = this.cache.get(this.name, this.name) || [];
+    const mappedRaces = chipEvents.flatMap(this.mapRaces);
+    const allRaces = this.mergeRaceData(cachedRaces, mappedRaces);
+
+    this.cache.set(this.name, this.name, allRaces);
+
+    this.races = allRaces.reduce((map, race) => {
       return map.set(race.name, async () => race);
-    }, new RaceMap()));
+    }, new RaceMap());
+
+    return this.races;
   }
 
   private async getChipEvents(): Promise<ChipEvent[]> {
     return await firstValueFrom(this.http.get<ChipEvent[]>(`https://api.championchipireland.com/v1/chip_events?${Date.now()}`));
   }
 
-  private mapRaces = (chipEvent: ChipEvent): Race[] => {
+  private mapRaces = (chipEvent: ChipEvent): UpdatableRace[] => {
     const hasMultipleRaces = chipEvent.races.length > 1;
 
     return chipEvent.races.map((race) => ({
@@ -50,6 +63,7 @@ export class ChampionChipIreland implements IProvider {
       results: this.mapRace(race),
       headers: race.columns.split(',').map((x) => race.csv_headers[Number(x)]),
       headersMobile: race.columns_mobile.split(',').map((x) => race.csv_headers[Number(x)]),
+      updatedAt: race.updated_at,
     }));
   };
 
@@ -60,5 +74,21 @@ export class ChampionChipIreland implements IProvider {
         return result;
       }, {})
     );
+  };
+
+  private mergeRaceData = (cachedRaces: UpdatableRace[], mappedRaces: UpdatableRace[]): UpdatableRace[] => {
+    const races: { [key: string]: UpdatableRace } = {};
+    for (const race of cachedRaces) {
+      races[race.name] = race;
+    }
+
+    for (const race of mappedRaces) {
+      const cachedRace = races[race.name];
+      if (!cachedRace || cachedRace.updatedAt < race.updatedAt) {
+        races[race.name] = race;
+      }
+    }
+
+    return Object.values(races);
   };
 }

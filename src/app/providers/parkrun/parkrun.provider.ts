@@ -49,7 +49,7 @@ export class ParkrunProvider implements IProvider {
   }
 
   private async getClubReport(date: string): Promise<Race> {
-    return this.cache.get(this.name, date, async () => {
+    return this.cache.getOrRetrieve(this.name, date, async () => {
       const html = await this.getHTML(this.consolidatedReportUrl + date);
       const $ = cheerio.load(html);
 

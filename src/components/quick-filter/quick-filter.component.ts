@@ -1,11 +1,10 @@
-import { Component, ViewEncapsulation, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { IconDefinition, faMagnifyingGlass, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'quick-filter',
   templateUrl: './quick-filter.component.html',
   styleUrls: ['./quick-filter.component.scss'],
-  encapsulation: ViewEncapsulation.None,
 })
 export class QuickFilterComponent {
   @Input({ required: true })

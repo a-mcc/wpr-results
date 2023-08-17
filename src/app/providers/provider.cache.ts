@@ -3,17 +3,23 @@ import { Race } from '../common/race';
 
 @Injectable({ providedIn: 'root' })
 export class ProviderCache {
-  public async get(providerName: string, raceName: string, getter: () => Promise<Race>): Promise<Race> {
-    const key = `${providerName}.${raceName}`;
-
-    const cache = sessionStorage.getItem(key);
-    if (cache) {
-      return JSON.parse(cache);
+  public async getOrRetrieve(providerName: string, raceName: string, getter: () => Promise<Race>): Promise<Race> {
+    const item = this.get(providerName, raceName);
+    if (item) {
+      return item;
     }
 
     const data = await getter();
-    sessionStorage.setItem(key, JSON.stringify(data));
+    this.set(providerName, raceName, data);
 
     return data;
+  }
+
+  public get(providerName: string, raceName: string): any {
+    return JSON.parse(localStorage.getItem(`${providerName}.${raceName}`)!);
+  }
+
+  public set(providerName: string, raceName: string, data: any): void {
+    localStorage.setItem(`${providerName}.${raceName}`, JSON.stringify(data));
   }
 }
