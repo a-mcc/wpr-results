@@ -4,17 +4,11 @@ import { Race, RaceMap } from 'src/app/common/race';
 import { IProvider } from '../provider';
 import { firstValueFrom } from 'rxjs';
 import { ProviderCache } from '../provider.cache';
-import { DateTime } from 'luxon';
-
-interface UpdatableRace extends Race {
-  updatedAt: string;
-}
 
 type ChampionChipRace = {
   name: string;
   csv_data: string[][];
   csv_headers: string[];
-  updated_at: string;
   columns: string;
   columns_mobile: string;
 };
@@ -38,12 +32,7 @@ export class ChampionChipIreland implements IProvider {
     }
 
     const chipEvents = await this.getChipEvents();
-
-    const cachedRaces = this.cache.get(this.name, this.name) || [];
-    const mappedRaces = chipEvents.flatMap(this.mapRaces);
-    const allRaces = this.mergeRaceData(cachedRaces, mappedRaces);
-
-    this.cache.set(this.name, this.name, allRaces);
+    const allRaces = this.mergeRaceData(chipEvents.flatMap(this.mapRaces));
 
     this.races = allRaces.reduce((map, race) => {
       return map.set(race.name, async () => race);
@@ -56,7 +45,7 @@ export class ChampionChipIreland implements IProvider {
     return await firstValueFrom(this.http.get<ChipEvent[]>(`https://api.championchipireland.com/v1/chip_events?${Date.now()}`));
   }
 
-  private mapRaces = (chipEvent: ChipEvent): UpdatableRace[] => {
+  private mapRaces = (chipEvent: ChipEvent): Race[] => {
     const hasMultipleRaces = chipEvent.races.length > 1;
 
     return chipEvent.races.map((race) => ({
@@ -64,14 +53,7 @@ export class ChampionChipIreland implements IProvider {
       results: this.mapRace(race),
       headers: race.columns.split(',').map((x) => race.csv_headers[Number(x)]),
       headersMobile: race.columns_mobile.split(',').map((x) => race.csv_headers[Number(x)]),
-      updatedAt: parseDate(race.updated_at),
     }));
-
-    function parseDate(date: string): string {
-      date = date.replace(/(?:st|nd|rd|th)(?= )/, '');
-
-      return DateTime.fromFormat(date, 'dd MMM yyyy T', { zone: 'UTC' }).toJSON()!;
-    }
   };
 
   private mapRace = (race: ChampionChipRace): any[] => {
@@ -83,19 +65,19 @@ export class ChampionChipIreland implements IProvider {
     );
   };
 
-  private mergeRaceData = (cachedRaces: UpdatableRace[], mappedRaces: UpdatableRace[]): UpdatableRace[] => {
-    const races: { [key: string]: UpdatableRace } = {};
-    for (const race of cachedRaces) {
+  private mergeRaceData = (mappedRaces: Race[]): Race[] => {
+    const races: { [key: string]: Race } = {};
+    for (const race of mappedRaces) {
       races[race.name] = race;
     }
 
-    for (const race of mappedRaces) {
-      const cachedRace = races[race.name];
-      if (!cachedRace || cachedRace.updatedAt < race.updatedAt) {
+    const cachedRaces = this.cache.get<Race[]>(this.name, this.name) || [];
+    for (const race of cachedRaces) {
+      if (!races[race.name]) {
         races[race.name] = race;
       }
     }
 
-    return Object.values(races);
+    return this.cache.set(this.name, this.name, Object.values(races));
   };
 }
