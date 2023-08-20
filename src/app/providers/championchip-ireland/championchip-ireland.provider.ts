@@ -4,6 +4,7 @@ import { Race, RaceMap } from 'src/app/common/race';
 import { IProvider } from '../provider';
 import { firstValueFrom } from 'rxjs';
 import { ProviderCache } from '../provider.cache';
+import { DateTime } from 'luxon';
 
 interface UpdatableRace extends Race {
   updatedAt: string;
@@ -63,8 +64,14 @@ export class ChampionChipIreland implements IProvider {
       results: this.mapRace(race),
       headers: race.columns.split(',').map((x) => race.csv_headers[Number(x)]),
       headersMobile: race.columns_mobile.split(',').map((x) => race.csv_headers[Number(x)]),
-      updatedAt: race.updated_at,
+      updatedAt: parseDate(race.updated_at),
     }));
+
+    function parseDate(date: string): string {
+      date = date.replace(/(?:st|nd|rd|th)(?= )/, '');
+
+      return DateTime.fromFormat(date, 'dd MMM yyyy T', { zone: 'UTC' }).toJSON()!;
+    }
   };
 
   private mapRace = (race: ChampionChipRace): any[] => {
