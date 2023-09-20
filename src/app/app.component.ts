@@ -7,6 +7,7 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { IconDefinition, faPersonRunning, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { ParkrunProvider } from './providers/parkrun/parkrun.provider';
+import { MyRaceResult } from './providers/my-race-result/my-race-result-provider';
 
 @Component({
   selector: 'app-root',
@@ -39,8 +40,8 @@ export class AppComponent {
   public hasMobileColumns: boolean = false;
   public showAllColumns: boolean = false;
 
-  constructor(private championChipIreland: ChampionChipIreland, private parkrunProvider: ParkrunProvider) {
-    this.providers = [parkrunProvider, championChipIreland];
+  constructor(private parkrunProvider: ParkrunProvider, private championChipIreland: ChampionChipIreland, private myRaceResult: MyRaceResult) {
+    this.providers = [parkrunProvider, championChipIreland, myRaceResult];
     this.onProviderChange(this.providers[0].name);
   }
 

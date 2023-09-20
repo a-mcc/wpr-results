@@ -31,7 +31,7 @@ export class ParkrunProvider implements IProvider {
 
     const races = new RaceMap();
 
-    while (races.size < 4) {
+    while (races.size < 52) {
       const date = formatDate(saturday);
       races.set(date, () => this.getClubReport(date));
       saturday.setDate(saturday.getDate() - 7);
