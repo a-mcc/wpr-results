@@ -8,13 +8,13 @@
 
   <div class="dropdowns">
     <select class="dropdown" (change)="onProviderChange($any($event.target).value)" *ngIf="providers.length > 1">
-      <option *ngFor="let provider of providers">
+      <option *ngFor="let provider of providers" [selected]="provider === activeProvider">
         {{provider.name}}
       </option>
     </select>
 
     <select class="dropdown" (change)="onRaceChange($any($event.target).value)" *ngIf="raceNames.length">
-      <option *ngFor="let race of raceNames">
+      <option *ngFor="let race of raceNames" [selected]="race === activeRace.name">
         {{race}}
       </option>
     </select>
@@ -39,7 +39,8 @@
 
   <div class="controls" *ngIf="!isLoading">
     <quick-filter [(text)]="quickFilter"></quick-filter>
-    <fa-button class="export" [icon]="download" (click)="exportData()"></fa-button>
+    <fa-button class="share" [icon]="share" (click)="shareGrid()" title="Copy link to results"></fa-button>
+    <fa-button class="export" [icon]="download" (click)="exportGrid()" title="Download results"></fa-button>
   </div>
 
   <ag-grid-angular

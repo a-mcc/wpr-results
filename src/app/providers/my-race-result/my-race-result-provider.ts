@@ -25,7 +25,7 @@ export class MyRaceResult implements IProvider {
     this.races = new RaceMap();
     this.races.set(
       Races.BelfastCityHalfMarathon23,
-      async () => await this.cache.getOrRetrieve(this.name, Races.BelfastCityHalfMarathon23, async () => this.getBelfastCityHalfMarathon23())
+      async () => await this.cache.getOrRetrieve(this.name, Races.BelfastCityHalfMarathon23, () => this.getBelfastCityHalfMarathon23())
     );
 
     return this.races;

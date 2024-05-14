@@ -1,10 +1,11 @@
-import { Component, ViewChild, HostListener } from '@angular/core';
+import { Component, ViewChild, HostListener, OnInit } from '@angular/core';
+import { Clipboard } from '@angular/cdk/clipboard';
 import { ColDef, ValueGetterParams } from 'ag-grid-community';
 import { Race, RaceMap } from './common/race';
 import { ChampionChipIreland } from './providers/championchip-ireland/championchip-ireland.provider';
 import { IProvider } from './providers/provider';
 import { AgGridAngular } from 'ag-grid-angular';
-import { IconDefinition, faPersonRunning, faDownload } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition, faPersonRunning, faDownload, faShareNodes } from '@fortawesome/free-solid-svg-icons';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { ParkrunProvider } from './providers/parkrun/parkrun.provider';
 import { MyRaceResult } from './providers/my-race-result/my-race-result-provider';
@@ -14,13 +15,14 @@ import { MyRaceResult } from './providers/my-race-result/my-race-result-provider
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   @ViewChild(AgGridAngular) grid!: AgGridAngular;
 
   public isLoading: boolean = true;
 
   public runner: IconDefinition = faPersonRunning;
   public download: IconDefinition = faDownload;
+  public share: IconDefinition = faShareNodes;
 
   public defaultGridColumnDef: ColDef = { sortable: true };
   public gridColumnDefinitions: ColDef[] = [];
@@ -28,11 +30,11 @@ export class AppComponent {
   public gridData: any[] = [];
 
   public providers: IProvider[];
-  private activeProvider!: IProvider;
+  public activeProvider!: IProvider;
 
   public raceNames: string[] = [];
   private races: RaceMap = new RaceMap();
-  private activeRace!: Race;
+  public activeRace!: Race;
 
   public quickFilter: string = '';
 
@@ -40,19 +42,42 @@ export class AppComponent {
   public hasMobileColumns: boolean = false;
   public showAllColumns: boolean = false;
 
-  constructor(private parkrunProvider: ParkrunProvider, private championChipIreland: ChampionChipIreland, private myRaceResult: MyRaceResult) {
+  constructor(
+    private clipboard: Clipboard,
+    private parkrunProvider: ParkrunProvider,
+    private championChipIreland: ChampionChipIreland,
+    private myRaceResult: MyRaceResult
+  ) {
     this.providers = [parkrunProvider, championChipIreland, myRaceResult];
-    this.onProviderChange(this.providers[0].name);
   }
 
-  async onProviderChange(name: string): Promise<void> {
+  async ngOnInit(): Promise<void> {
+    const params = /provider=(?<provider>[^&]+)&race=(?<race>[^&]+)(&filter=(?<filter>[^&]+))?/.exec(location.search)?.groups;
+
+    history.replaceState({}, document.title, location.origin);
+
+    const providerName = getParam('provider').toLowerCase();
+
+    const provider = this.providers.find((x) => x.name.toLowerCase() === providerName) || this.providers[0];
+    await this.onProviderChange(provider.name, getParam('race'));
+
+    this.quickFilter = getParam('filter');
+
+    function getParam(name: string): string {
+      return decodeURIComponent(params?.[name] || '');
+    }
+  }
+
+  async onProviderChange(name: string, raceName: string | null = null): Promise<void> {
     this.quickFilter = '';
     this.isLoading = true;
     this.raceNames = [];
     this.activeProvider = this.providers.find((x) => x.name === name)!;
     this.races = await this.activeProvider.getRaces();
     this.raceNames = [...this.races.keys()];
-    await this.onRaceChange(this.raceNames[0]);
+
+    const race = this.raceNames.find((x) => x.toLowerCase() === raceName?.toLowerCase()) || this.raceNames[0];
+    await this.onRaceChange(race);
   }
 
   async onRaceChange(name: string) {
@@ -99,7 +124,19 @@ export class AppComponent {
     }
   }
 
-  exportData() {
+  shareGrid() {
+    const provider = `provider=${this.activeProvider.name}`;
+    const race = `race=${this.activeRace.name}`;
+
+    let url = `${window.location.origin}?${provider}&${race}`;
+    if (this.quickFilter) {
+      url += `&filter=${this.quickFilter}`;
+    }
+
+    this.clipboard.copy(url);
+  }
+
+  exportGrid() {
     this.grid.api.exportDataAsCsv({
       exportedRows: 'filteredAndSorted',
       fileName: `${this.activeRace.name}.csv`,
