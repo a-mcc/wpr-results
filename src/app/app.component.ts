@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     const params = /provider=(?<provider>[^&]+)&race=(?<race>[^&]+)(&filter=(?<filter>[^&]+))?/.exec(location.search)?.groups;
 
-    history.replaceState({}, document.title, location.origin);
+    history.replaceState({}, document.title, location.origin + location.pathname);
 
     const providerName = getParam('provider').toLowerCase();
 
@@ -128,7 +128,7 @@ export class AppComponent implements OnInit {
     const provider = `provider=${this.activeProvider.name}`;
     const race = `race=${this.activeRace.name}`;
 
-    let url = `${window.location.origin}?${provider}&${race}`;
+    let url = `${location.origin + location.pathname}?${provider}&${race}`;
     if (this.quickFilter) {
       url += `&filter=${this.quickFilter}`;
     }
