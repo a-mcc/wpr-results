@@ -125,15 +125,19 @@ export class AppComponent implements OnInit {
   }
 
   shareGrid() {
-    const provider = `provider=${this.activeProvider.name}`;
-    const race = `race=${this.activeRace.name}`;
+    const provider = encode('provider', this.activeProvider.name);
+    const race = encode('race', this.activeRace.name);
 
     let url = `${location.origin + location.pathname}?${provider}&${race}`;
     if (this.quickFilter) {
-      url += `&filter=${this.quickFilter}`;
+      url += `&${encode('filter', this.quickFilter)}`;
     }
 
     this.clipboard.copy(url);
+
+    function encode(name: string, value: string) {
+      return `${name}=${encodeURIComponent(value)}`;
+    }
   }
 
   exportGrid() {
