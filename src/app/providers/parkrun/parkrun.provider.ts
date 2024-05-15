@@ -55,8 +55,7 @@ export class ParkrunProvider implements IProvider {
 
       const eventResults = $('h2').map((i, h2) => {
         const parkrunName = $(h2).text();
-        const event = $(`a:contains("${parkrunName}")`).attr('href')!;
-
+        const event = $(`a:contains("${parkrunName}")`).attr('href')!.replace('weeklyresults/?runSeqNumber=', '');
         return this.getEventResults(parkrunName, event);
       });
 
@@ -72,7 +71,7 @@ export class ParkrunProvider implements IProvider {
   }
 
   private async getEventResults(parkrunName: string, event: string): Promise<ParkrunRace[]> {
-    parkrunName = parkrunName.split('parkrun')[0].trim();
+    parkrunName = parkrunName.replace(/ ?parkrun ?/, '').trim();
 
     const html = await this.getHTML(event);
     const $ = cheerio.load(html);
