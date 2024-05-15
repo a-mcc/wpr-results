@@ -33,8 +33,10 @@ export class AppComponent implements OnInit {
   public activeProvider!: IProvider;
 
   public raceNames: string[] = [];
+  public activeRaceName: string = '';
+
   private races: RaceMap = new RaceMap();
-  public activeRace!: Race;
+  private activeRace!: Race;
 
   public quickFilter: string = '';
 
@@ -84,6 +86,7 @@ export class AppComponent implements OnInit {
     this.isLoading = true;
 
     this.activeRace = await this.races.get(name)!();
+    this.activeRaceName = this.activeRace.name;
 
     this.gridData = this.activeRace.results;
     this.gridColumnDefinitions = this.activeRace.headers.map((key) => {

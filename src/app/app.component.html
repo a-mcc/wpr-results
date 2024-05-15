@@ -14,7 +14,7 @@
     </select>
 
     <select class="dropdown" (change)="onRaceChange($any($event.target).value)" *ngIf="raceNames.length">
-      <option *ngFor="let race of raceNames" [selected]="race === activeRace.name">
+      <option *ngFor="let race of raceNames" [selected]="race === activeRaceName">
         {{race}}
       </option>
     </select>
