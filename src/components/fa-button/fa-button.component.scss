@@ -5,22 +5,6 @@
   align-items: center;
   justify-content: center;
 
-  @media (prefers-color-scheme: dark) {
-    color: #ddd;
-
-    &.clickable {
-      cursor: pointer;
-
-      &:hover {
-        background-color: #222;
-
-        &:active {
-          background-color: #111;
-        }
-      }
-    }
-  }
-
   &.clickable {
     cursor: pointer;
 
@@ -29,6 +13,20 @@
 
       &:active {
         background-color: grey;
+      }
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: #ddd;
+
+    &.clickable {
+      &:hover {
+        background-color: #222;
+
+        &:active {
+          background-color: #111;
+        }
       }
     }
   }
