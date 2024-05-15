@@ -4,15 +4,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #ddd;
 
   &.clickable {
     cursor: pointer;
 
     &:hover {
-      background-color: lightgray;
+      background-color: #222;
 
       &:active {
-        background-color: gray;
+        background-color: #111;
       }
     }
   }

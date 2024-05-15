@@ -40,7 +40,11 @@
     .dropdown {
       margin-left: 16px;
       height: 32px;
+      background-color: #333;
+      color: #ddd;
+      border-radius: 0.25rem;
     }
+
     @media screen and (max-width: 1023px) {
       display: flex;
       flex-direction: column;

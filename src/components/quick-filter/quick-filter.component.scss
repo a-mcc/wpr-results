@@ -6,6 +6,8 @@
   .quick-filter {
     flex: 1;
     border: none;
+    background-color: #333;
+    color: #ddd;
 
     &:focus {
       outline: none;
