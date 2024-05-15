@@ -82,7 +82,7 @@ export class ParkrunProvider implements IProvider {
       const genderPosition = $tr.find('td.Results-table-td--gender .detailed').text().split('/')[0].trim()!;
       const name = $tr.attr('data-name')!;
       const time = $tr.find('td.Results-table-td--time .compact').text()!;
-      const achievement = $tr.attr('data-achievement')!;
+      const achievement = getAchievement();
 
       return {
         parkrun: parkrunName,
@@ -92,6 +92,20 @@ export class ParkrunProvider implements IProvider {
         Time: time,
         Achievement: achievement,
       };
+
+      function getAchievement() {
+        const td = $tr.find('td.Results-table-td--time');
+
+        if (td.is('.Results-table-td--pb')) {
+          return 'New PB';
+        }
+
+        if (td.is('.Results-table-td--ft')) {
+          return 'First Timer';
+        }
+
+        return '';
+      }
     });
 
     return [...results];
