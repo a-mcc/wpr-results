@@ -3,6 +3,8 @@
 @import 'ag-grid-community/styles/ag-theme-alpine.css';
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
-html {
-  background-color: #333;
+@media (prefers-color-scheme: dark) {
+  html {
+    background-color: #333;
+  }
 }
