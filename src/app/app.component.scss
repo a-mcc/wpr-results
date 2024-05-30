@@ -102,30 +102,6 @@
   }
 }
 
-svg.material-icons {
-  height: 24px;
-  width: auto;
-}
-
-svg.material-icons:not(:last-child) {
-  margin-right: 8px;
-}
-
-svg#rocket {
-  width: 80px;
-  position: absolute;
-  left: -10px;
-  top: -24px;
-}
-
-svg#rocket-smoke {
-  height: calc(100vh - 95px);
-  position: absolute;
-  top: 10px;
-  right: 180px;
-  z-index: -10;
-}
-
 svg#clouds {
   position: fixed;
   bottom: -160px;
@@ -135,13 +111,6 @@ svg#clouds {
 }
 
 /* Responsive Styles */
-@media screen and (max-width: 767px) {
-  svg#rocket-smoke {
-    right: 120px;
-    transform: rotate(-5deg);
-  }
-}
-
 @media screen and (max-width: 1023px) {
   .content {
     width: 100vw;
@@ -156,13 +125,6 @@ svg#clouds {
 
   body {
     margin-bottom: 0 !important;
-  }
-}
-
-@media screen and (max-width: 575px) {
-  svg#rocket-smoke {
-    display: none;
-    visibility: hidden;
   }
 }
 
