@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Race, RaceMap } from 'src/app/common/race';
 import { IProvider } from '../provider';
 import { firstValueFrom } from 'rxjs';
-import * as cheerio from 'cheerio';
+import { CheerioAPI, Element, load } from 'cheerio';
 import { ProviderCache } from '../provider.cache';
 
 type ParkrunRace = {
@@ -12,7 +12,6 @@ type ParkrunRace = {
   'Gender Position': string;
   Name: string;
   Time: string;
-  Achievement: string;
 };
 
 @Injectable({ providedIn: 'root' })
@@ -51,62 +50,39 @@ export class ParkrunProvider implements IProvider {
   private async getClubReport(date: string): Promise<Race> {
     return this.cache.getOrRetrieve(this.name, date, async () => {
       const html = await this.getHTML(this.consolidatedReportUrl + date);
-      const $ = cheerio.load(html);
 
-      const eventResults = $('h2').map((i, h2) => {
-        const parkrunName = $(h2).text();
-        const event = $(`a:contains("${parkrunName}")`).attr('href')!.replace('weeklyresults/?runSeqNumber=', '');
-        return this.getEventResults(parkrunName, event);
-      });
+      const $ = load(html);
 
-      const results = await Promise.all([...eventResults]);
+      const results = $('h2').map((i, h2) => this.getEventResults($, h2));
 
       return {
         name: date,
         results: [...results].flat().sort((x, y) => x.parkrun.localeCompare(y.parkrun)),
-        headers: ['parkrun', 'Position', 'Gender Position', 'Name', 'Time', 'Achievement'],
-        headersMobile: ['parkrun', 'Position', 'Name', 'Time', 'Achievement'],
+        headers: ['parkrun', 'Position', 'Gender Position', 'Name', 'Time'],
+        headersMobile: ['parkrun', 'Position', 'Name', 'Time'],
       };
     });
   }
 
-  private async getEventResults(parkrunName: string, event: string): Promise<ParkrunRace[]> {
-    parkrunName = parkrunName.replace(/ ?parkrun ?/, '').trim();
+  private getEventResults($: CheerioAPI, h2: Element): ParkrunRace[] {
+    const parkrunName = $(h2)
+      .text()
+      .replace(/ ?parkrun ?/, '')
+      .trim();
 
-    const html = await this.getHTML(event);
-    const $ = cheerio.load(html);
+    const results = $('~table:first', h2)
+      .find('tr:has(td:nth-child(4):contains("Ward Park Runners"))')
+      .map((i, tr) => {
+        const [position, genderPosition, name, time] = [...$(tr).find('td:not(:nth-child(4))')].map((td) => $(td).text());
 
-    const results = $('tr[data-club="Ward Park Runners"]').map((i, tr) => {
-      const $tr = $(tr);
-      const position = $tr.attr('data-position')!;
-      const genderPosition = $tr.find('td.Results-table-td--gender .detailed').text().split('/')[0].trim()!;
-      const name = $tr.attr('data-name')!;
-      const time = $tr.find('td.Results-table-td--time .compact').text()!;
-      const achievement = getAchievement();
-
-      return {
-        parkrun: parkrunName,
-        Position: position,
-        'Gender Position': genderPosition,
-        Name: name,
-        Time: time,
-        Achievement: achievement,
-      };
-
-      function getAchievement() {
-        const td = $tr.find('td.Results-table-td--time');
-
-        if (td.is('.Results-table-td--pb')) {
-          return 'New PB';
-        }
-
-        if (td.is('.Results-table-td--ft')) {
-          return 'First Timer';
-        }
-
-        return '';
-      }
-    });
+        return {
+          parkrun: parkrunName,
+          Position: position,
+          'Gender Position': genderPosition,
+          Name: name,
+          Time: time,
+        };
+      });
 
     return [...results];
   }
