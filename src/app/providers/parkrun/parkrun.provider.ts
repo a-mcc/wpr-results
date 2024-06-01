@@ -31,24 +31,24 @@ export class ParkrunProvider implements IProvider {
     const races = new RaceMap();
 
     while (races.size < 52) {
-      const date = formatDate(saturday);
+      const date = this.formatDate(saturday);
       races.set(date, () => this.getClubReport(date));
       saturday.setDate(saturday.getDate() - 7);
     }
 
     return races;
+  }
 
-    function formatDate(date: Date): string {
-      const year = date.getFullYear().toString();
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
-      const day = date.getDate().toString().padStart(2, '0');
+  private formatDate(date: Date): string {
+    const year = date.getFullYear().toString();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
 
-      return `${year}-${month}-${day}`;
-    }
+    return `${year}-${month}-${day}`;
   }
 
   private async getClubReport(date: string): Promise<Race> {
-    return this.cache.getOrRetrieve(this.name, date, async () => {
+    const getReport = async (): Promise<Race> => {
       const html = await this.getHTML(this.consolidatedReportUrl + date);
 
       const $ = load(html);
@@ -61,7 +61,14 @@ export class ParkrunProvider implements IProvider {
         headers: ['parkrun', 'Position', 'Gender Position', 'Name', 'Time'],
         headersMobile: ['parkrun', 'Position', 'Name', 'Time'],
       };
-    });
+    };
+
+    const today = new Date();
+    if (date === this.formatDate(today)) {
+      return await getReport();
+    }
+
+    return await this.cache.getOrRetrieve(this.name, date, getReport);
   }
 
   private getEventResults($: CheerioAPI, h2: Element): ParkrunRace[] {
