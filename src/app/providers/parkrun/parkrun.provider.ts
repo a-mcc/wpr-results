@@ -48,7 +48,12 @@ export class ParkrunProvider implements IProvider {
   }
 
   private async getClubReport(date: string): Promise<Race> {
-    const getReport = async (): Promise<Race> => {
+    const today = this.formatDate(new Date());
+    if (date === today) {
+      this.cache.remove(this.name, date);
+    }
+
+    return this.cache.getOrRetrieve(this.name, date, async () => {
       const html = await this.getHTML(this.consolidatedReportUrl + date);
 
       const $ = load(html);
@@ -61,14 +66,7 @@ export class ParkrunProvider implements IProvider {
         headers: ['parkrun', 'Position', 'Gender Position', 'Name', 'Time'],
         headersMobile: ['parkrun', 'Position', 'Name', 'Time'],
       };
-    };
-
-    const today = new Date();
-    if (date === this.formatDate(today)) {
-      return await getReport();
-    }
-
-    return await this.cache.getOrRetrieve(this.name, date, getReport);
+    });
   }
 
   private getEventResults($: CheerioAPI, h2: Element): ParkrunRace[] {
