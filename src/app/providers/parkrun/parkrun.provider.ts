@@ -5,6 +5,7 @@ import { IProvider } from '../provider';
 import { firstValueFrom } from 'rxjs';
 import { CheerioAPI, Element, load } from 'cheerio';
 import { ProviderCache } from '../provider.cache';
+import { get } from 'http';
 
 type ParkrunRace = {
   parkrun: string;
@@ -48,12 +49,7 @@ export class ParkrunProvider implements IProvider {
   }
 
   private async getClubReport(date: string): Promise<Race> {
-    const today = this.formatDate(new Date());
-    if (date === today) {
-      this.cache.remove(this.name, date);
-    }
-
-    return this.cache.getOrRetrieve(this.name, date, async () => {
+    const getReport = async () => {
       const html = await this.getHTML(this.consolidatedReportUrl + date);
 
       const $ = load(html);
@@ -66,7 +62,14 @@ export class ParkrunProvider implements IProvider {
         headers: ['parkrun', 'Position', 'Gender Position', 'Name', 'Time'],
         headersMobile: ['parkrun', 'Position', 'Name', 'Time'],
       };
-    });
+    };
+
+    const today = this.formatDate(new Date());
+    if (date === today) {
+      return await getReport();
+    }
+
+    return this.cache.getOrRetrieve(this.name, date, getReport);
   }
 
   private getEventResults($: CheerioAPI, h2: Element): ParkrunRace[] {

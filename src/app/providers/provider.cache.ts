@@ -13,19 +13,11 @@ export class ProviderCache {
   }
 
   public get<T>(providerName: string, raceName: string): T {
-    return JSON.parse(localStorage.getItem(this.getName(providerName, raceName))!);
+    return JSON.parse(localStorage.getItem(`${providerName}.${raceName}`)!);
   }
 
   public set<T>(providerName: string, raceName: string, data: T): T {
-    localStorage.setItem(this.getName(providerName, raceName), JSON.stringify(data));
+    localStorage.setItem(`${providerName}.${raceName}`, JSON.stringify(data));
     return data;
-  }
-
-  public remove(providerName: string, raceName: string) {
-    localStorage.removeItem(this.getName(providerName, raceName));
-  }
-
-  private getName(providerName: string, raceName: string) {
-    return `${providerName}.${raceName}`;
   }
 }
