@@ -54,14 +54,13 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    const params = /provider=(?<provider>[^&]+)&race=(?<race>[^&]+)(&filter=(?<filter>[^&]+))?/.exec(location.search)?.groups;
-
-    history.replaceState({}, document.title, location.origin + location.pathname);
+    const params = /#\/(?<provider>[^&]+)\/(?<race>[^&]+)(\/(?<filter>[^&]+))?/.exec(location.search)?.groups;
 
     const providerName = getParam('provider').toLowerCase();
+    const raceName = getParam('race').toLowerCase();
 
     const provider = this.providers.find((x) => x.name.toLowerCase() === providerName) || this.providers[0];
-    await this.onProviderChange(provider.name, getParam('race'));
+    await this.onProviderChange(provider.name, raceName);
 
     this.quickFilter = getParam('filter');
 
@@ -71,6 +70,7 @@ export class AppComponent implements OnInit {
   }
 
   async onProviderChange(name: string, raceName: string | null = null): Promise<void> {
+    this.updateUrl(false);
     this.quickFilter = '';
     this.isLoading = true;
     this.raceNames = [];
@@ -109,6 +109,14 @@ export class AppComponent implements OnInit {
     this.hasMobileColumns = this.activeRace.headersMobile.length != this.activeRace.headers.length;
 
     this.isLoading = false;
+
+    this.updateUrl();
+  }
+
+  onQuickFilterChanged(value: string): void {
+    this.quickFilter = value;
+
+    this.updateUrl();
   }
 
   numberParser(key: string) {
@@ -116,7 +124,7 @@ export class AppComponent implements OnInit {
   }
 
   resizeGrid() {
-    this.grid.columnApi.autoSizeAllColumns();
+    this.grid.api.autoSizeAllColumns();
 
     const gridApi: any = this.grid.api;
     const availableWidth = gridApi.gridBodyCtrl.eBodyViewport.clientWidth;
@@ -162,5 +170,16 @@ export class AppComponent implements OnInit {
     this.isMobile = window.innerWidth < 1024;
 
     setTimeout(() => this.resizeGrid());
+  }
+
+  updateUrl(includeHash = true) {
+    const encode = (value: string) => encodeURIComponent(value);
+
+    let url = location.origin + location.pathname;
+    if (includeHash) {
+      url += `#/${encode(this.activeProvider.name)}/${encode(this.activeRace.name)}/${encode(this.quickFilter)}`;
+    }
+
+    history.replaceState({}, document.title, url);
   }
 }

@@ -38,7 +38,7 @@
   </fa-icon>
 
   <div class="controls" *ngIf="!isLoading">
-    <quick-filter [(text)]="quickFilter"></quick-filter>
+    <quick-filter [text]="quickFilter" (textChange)="onQuickFilterChanged($event)"></quick-filter>
     <fa-button class="share" [icon]="share" (click)="shareGrid()" title="Copy link to results"></fa-button>
     <fa-button class="export" [icon]="download" (click)="exportGrid()" title="Download results"></fa-button>
   </div>
