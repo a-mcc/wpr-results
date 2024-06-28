@@ -7,6 +7,7 @@ import { IProvider } from './providers/provider';
 import { AgGridAngular } from 'ag-grid-angular';
 import { IconDefinition, faPersonRunning, faDownload, faShareNodes } from '@fortawesome/free-solid-svg-icons';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { ToastrService } from 'ngx-toastr';
 import { ParkrunProvider } from './providers/parkrun/parkrun.provider';
 import { MyRaceResult } from './providers/my-race-result/my-race-result-provider';
 
@@ -45,6 +46,7 @@ export class AppComponent implements OnInit {
   public showAllColumns: boolean = false;
 
   constructor(
+    private toastr: ToastrService,
     private clipboard: Clipboard,
     private parkrunProvider: ParkrunProvider,
     private championChipIreland: ChampionChipIreland,
@@ -137,6 +139,7 @@ export class AppComponent implements OnInit {
 
   shareGrid() {
     this.clipboard.copy(location.href);
+    this.toastr.success('Link copied to clipboard');
   }
 
   exportGrid() {

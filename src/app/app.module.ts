@@ -10,10 +10,21 @@ import { AppComponent } from './app.component';
 import { FaButtonComponent } from '../components/fa-button/fa-button.component';
 import { QuickFilterComponent } from 'src/components/quick-filter/quick-filter.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [AppComponent, FaButtonComponent, QuickFilterComponent],
-  imports: [BrowserModule, HttpClientModule, AgGridModule, FontAwesomeModule, FormsModule, BrowserAnimationsModule, MatSlideToggleModule, ClipboardModule],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    AgGridModule,
+    FontAwesomeModule,
+    FormsModule,
+    BrowserAnimationsModule,
+    MatSlideToggleModule,
+    ClipboardModule,
+    ToastrModule.forRoot({ positionClass: 'toast-top-center', timeOut: 2000 }),
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })
