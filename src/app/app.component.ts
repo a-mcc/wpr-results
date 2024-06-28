@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    const params = /#\/(?<provider>[^&]+)\/(?<race>[^&]+)(\/(?<filter>[^&]+))?/.exec(location.hash)?.groups;
+    const params = /#\/(?<provider>[^\/]+)\/(?<race>[^\/]+)(\/(?<filter>[^\/]+))?/.exec(location.hash)?.groups;
 
     const providerName = getParam('provider').toLowerCase();
     const raceName = getParam('race').toLowerCase();
