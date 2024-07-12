@@ -6,15 +6,31 @@ import { ChampionChipIreland } from './providers/championchip-ireland/championch
 import { IProvider } from './providers/provider';
 import { AgGridAngular } from 'ag-grid-angular';
 import { IconDefinition, faPersonRunning, faDownload, faShareNodes } from '@fortawesome/free-solid-svg-icons';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatSlideToggleChange, MatSlideToggle } from '@angular/material/slide-toggle';
 import { ToastrService } from 'ngx-toastr';
 import { ParkrunProvider } from './providers/parkrun/parkrun.provider';
 import { MyRaceResult } from './providers/my-race-result/my-race-result-provider';
+import { FaButtonComponent } from '../components/fa-button/fa-button.component';
+import { QuickFilterComponent } from '../components/quick-filter/quick-filter.component';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
+import { FormsModule } from '@angular/forms';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  standalone: true,
+  imports: [
+      NgIf,
+      NgFor,
+      FormsModule,
+      MatSlideToggle,
+      FaIconComponent,
+      QuickFilterComponent,
+      FaButtonComponent,
+      AgGridAngular,
+  ],
 })
 export class AppComponent implements OnInit {
   @ViewChild(AgGridAngular) grid!: AgGridAngular;

@@ -1,7 +1,11 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { IconDefinition, faMagnifyingGlass, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { FormsModule } from '@angular/forms';
+import { FaButtonComponent } from '../fa-button/fa-button.component';
 
 @Component({
+  standalone: true,
+  imports: [FaButtonComponent, FormsModule],
   selector: 'quick-filter',
   templateUrl: './quick-filter.component.html',
   styleUrls: ['./quick-filter.component.scss'],
