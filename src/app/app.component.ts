@@ -64,7 +64,8 @@ export class AppComponent implements OnInit {
     const provider = this.providers.find((x) => x.name.toLowerCase() === providerName) || this.providers[0];
     await this.onProviderChange(provider.name, raceName);
 
-    this.quickFilter = getParam('filter');
+    const quickFilter = getParam('filter');
+    this.onQuickFilterChanged(quickFilter);
 
     function getParam(name: string): string {
       return decodeURIComponent(params?.[name] || '');
