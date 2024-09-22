@@ -7,6 +7,7 @@ import { ProviderCache } from '../provider.cache';
 
 enum Races {
   BelfastCityHalfMarathon23 = "Belfast City Half Marathon '23",
+  BelfastCityHalfMarathon24 = "Belfast City Half Marathon '24",
 }
 
 @Injectable({ providedIn: 'root' })
@@ -26,6 +27,10 @@ export class MyRaceResult implements IProvider {
     this.races.set(
       Races.BelfastCityHalfMarathon23,
       async () => await this.cache.getOrRetrieve(this.name, Races.BelfastCityHalfMarathon23, () => this.getBelfastCityHalfMarathon23())
+    );
+    this.races.set(
+      Races.BelfastCityHalfMarathon24,
+      async () => await this.cache.getOrRetrieve(this.name, Races.BelfastCityHalfMarathon24, () => this.getBelfastCityHalfMarathon24())
     );
 
     return this.races;
@@ -73,6 +78,27 @@ export class MyRaceResult implements IProvider {
       results: results,
       headers: ['Pos', 'Gender Pos', 'Cat Pos', 'Cat', 'Bib', 'Name', 'Club', 'Finish Time', 'Chip Time'],
       headersMobile: ['Pos', 'Gender Pos', 'Cat Pos', 'Cat', 'Bib', 'Name', 'Club', 'Finish Time', 'Chip Time'],
+    };
+  }
+
+  private async getBelfastCityHalfMarathon24(): Promise<Race> {
+    const json = await firstValueFrom(this.http.get('./assets/results/belfast-half-marathon-2024.json', { responseType: 'text' }));
+    const rawResults: Array<string[]> = JSON.parse(json);
+
+    const results = rawResults.map((result, index) => ({
+      Pos: index + 1,
+      Bib: Number(result[2]),
+      Name: result[3],
+      Club: result[4],
+      'Finish Time': result[5],
+      'Chip Time': result[6],
+    }));
+
+    return {
+      name: Races.BelfastCityHalfMarathon24,
+      results: results,
+      headers: ['Pos', 'Bib', 'Name', 'Club', 'Finish Time', 'Chip Time'],
+      headersMobile: ['Pos', 'Bib', 'Name', 'Club', 'Finish Time', 'Chip Time'],
     };
   }
 }
