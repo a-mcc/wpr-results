@@ -42,6 +42,13 @@ export class AppComponent implements OnInit {
   public share: IconDefinition = faShareNodes;
 
   public defaultGridColumnDef: ColDef = { sortable: true };
+  public rowNumberColumnDef: ColDef = { 
+    colId: 'rowNumber',
+    sortable: false,
+    headerName: 'Row',
+    valueGetter: 'node.rowIndex + 1',
+    hide: true,
+  };
   public gridColumnDefinitions: ColDef[] = [];
   public gridColumnDefinitionsMobile: ColDef[] = [];
   public gridData: any[] = [];
@@ -108,7 +115,7 @@ export class AppComponent implements OnInit {
     this.activeRaceName = this.activeRace.name;
 
     this.gridData = this.activeRace.results;
-    this.gridColumnDefinitions = this.activeRace.headers.map((key) => {
+    this.gridColumnDefinitions = [this.rowNumberColumnDef].concat(this.activeRace.headers.map((key) => {
       const hasData = this.gridData.some((x) => x[key]);
       const isNumeric = hasData && this.gridData.every((x) => !Number.isNaN(Number(x[key])));
 
@@ -118,7 +125,7 @@ export class AppComponent implements OnInit {
         cellDataType: isNumeric ? 'number' : undefined,
         valueGetter: isNumeric ? this.numberParser(key) : undefined,
       };
-    });
+    }));
 
     this.gridColumnDefinitionsMobile = this.gridColumnDefinitions.map((columnDefinition) => ({
       ...columnDefinition,
@@ -189,5 +196,15 @@ export class AppComponent implements OnInit {
     }
 
     history.replaceState({}, document.title, url);
+  }
+
+  onSortOrFilterChanged() {
+    var hideRowNumber = !this.quickFilter && !this.grid.api.getColumnState().some(x => !!x.sort);
+
+    this.grid.api.setColumnsVisible(['rowNumber'], !hideRowNumber);
+
+    this.grid.api.refreshCells();
+
+    setTimeout(() => this.resizeGrid());
   }
 }
