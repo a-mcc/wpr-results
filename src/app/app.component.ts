@@ -143,6 +143,12 @@ export class AppComponent implements OnInit {
     this.quickFilter = value;
 
     this.updateUrl();
+    this.toggleRowNumberColumn();
+  }
+
+  onFirstDataRendered() {
+    this.toggleRowNumberColumn();
+    this.onWindowResize();
   }
 
   numberParser(key: string) {
@@ -198,7 +204,7 @@ export class AppComponent implements OnInit {
     history.replaceState({}, document.title, url);
   }
 
-  onSortOrFilterChanged() {
+  toggleRowNumberColumn() {
     var hideRowNumber = !this.quickFilter && !this.grid.api.getColumnState().some(x => !!x.sort);
 
     this.grid.api.setColumnsVisible(['rowNumber'], !hideRowNumber);
